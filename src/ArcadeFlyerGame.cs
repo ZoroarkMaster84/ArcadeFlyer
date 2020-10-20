@@ -29,6 +29,10 @@ namespace ArcadeFlyer2D
             // Set up the directory containing the assets
             Content.RootDirectory = "Content";
 
+            Player player = new Player(this, new Vector2(4f, 3f));
+            float playersHeight = player.SpriteHeight;
+            player.SpriteHeight = 10f;
+            
             // Make mouse visible
             IsMouseVisible = true;
         }
