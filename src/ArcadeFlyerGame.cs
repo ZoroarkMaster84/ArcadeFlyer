@@ -15,6 +15,7 @@ namespace ArcadeFlyer2D
         //Player Character Graphic
         private Texture2D playerImage;
         private Player player;
+        private Enemy enemy;
         private int screenWidth = 1600;
         public int ScreenWidth
         {
@@ -28,9 +29,6 @@ namespace ArcadeFlyer2D
             get { return screenHeight; }
             set { screenHeight = value; }
         }
-        
-
-        
 
         // Initalized the game
         public ArcadeFlyerGame()
@@ -51,6 +49,9 @@ namespace ArcadeFlyer2D
 
             Vector2 position = new Vector2(0.0f, 0.0f);
             player = new Player(this, position);
+
+            enemy = new Enemy(this, new Vector2(screenWidth, 0));
+
         }
 
         // Initialize
@@ -72,6 +73,8 @@ namespace ArcadeFlyer2D
         {   
             player.Update(gameTime);
 
+            enemy.Update(gameTime);
+
             // Update base game
             base.Update(gameTime);
         }
@@ -88,6 +91,8 @@ namespace ArcadeFlyer2D
             //spriteBatch.Draw(playerImage, playerDestinationRect, Color.White);
 
             player.Draw(gameTime, spriteBatch);
+
+            enemy.Draw(gameTime, spriteBatch);
 
             spriteBatch.End();
         }
