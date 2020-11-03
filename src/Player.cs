@@ -13,6 +13,14 @@ namespace ArcadeFlyer2D
         // The speed at which the player can move
         private float movementSpeed = 4.0f;
 
+        //Miminum time between shots
+        private float projectileCoolDownTime = 0.5f;
+
+        //Current time since shot
+        private float projectileTimer = 0.0f;
+
+        private bool projectileTimerActive = false;
+
         // Initialize a player
         public Player(ArcadeFlyerGame root, Vector2 position) : base(position)
         {
@@ -40,6 +48,7 @@ namespace ArcadeFlyer2D
             bool downKeyPressed = currentKeyboardState.IsKeyDown(Keys.Down);
             bool leftKeyPressed = currentKeyboardState.IsKeyDown(Keys.Left);
             bool rightKeyPressed = currentKeyboardState.IsKeyDown(Keys.Right);
+            bool spaceKeyPressed = currentKeyboardState.IsKeyDown(Keys.Space);
 
             // If Up is pressed, decrease position Y
             if (upKeyPressed)
@@ -64,6 +73,18 @@ namespace ArcadeFlyer2D
             {
                 position.X += movementSpeed;
             }
+
+            // If Space is pressed, shoot a shot
+            if(spaceKeyPressed && !projectileTimerActive)
+            {
+                Vector2 projectilePosition;
+                Vector2 projectileVelocity;
+                projectilePosition = new Vector2(position.X + (SpriteWidth / 2), position.Y + (SpriteHeight / 2));
+                projectileVelocity = new Vector2(10.0f, 0.0f);
+                root.FireProjectile(projectilePosition, projectileVelocity);
+                projectileTimerActive = true;
+                projectileTimer = 0.0f;
+            }
         }
 
         // Called each frame
@@ -74,6 +95,16 @@ namespace ArcadeFlyer2D
 
             // Handle any movement input
             HandleInput(currentKeyboardState);
+
+            if(projectileTimerActive)
+            {
+                projectileTimer += (float)gameTime.ElapsedGameTime.TotalSeconds;
+
+                if(projectileTimer > projectileCoolDownTime)
+                {
+                    projectileTimerActive = false;
+                }
+            }
         }
     }
 }
