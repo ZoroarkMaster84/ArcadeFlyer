@@ -77,7 +77,7 @@ namespace ArcadeFlyer2D
                 Vector2 projectileVelocity;
                 projectilePosition = new Vector2(position.X + (SpriteWidth / 2), position.Y + (SpriteHeight / 2));
                 projectileVelocity = new Vector2(10.0f, 0.0f);
-                root.FireProjectile(projectilePosition, projectileVelocity, "player");
+                root.FireProjectile(projectilePosition, projectileVelocity, ProjectileType.Player);
                 cooldownTimer.StartTimer();
             }
         }
