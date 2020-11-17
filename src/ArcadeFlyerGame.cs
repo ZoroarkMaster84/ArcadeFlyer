@@ -16,8 +16,9 @@ namespace ArcadeFlyer2D
         // The player
         private Player player;
 
-        // An enemy
-        private Enemy enemy;
+        private List<Enemy> enemies;
+
+        private Timer enemyCreationTimer;
 
         private List<Projectile> projectiles;
 
@@ -60,9 +61,14 @@ namespace ArcadeFlyer2D
 
             // Initialize the player to be in the top left
             player = new Player(this, new Vector2(0.0f, 0.0f));
+
+            enemies = new List<Enemy>();
             
             // Initialize an enemy to be on the right side
-            enemy = new Enemy(this, new Vector2(screenWidth, 0));
+            enemies.Add(new Enemy(this, new Vector2(screenWidth, 0)));
+
+            enemyCreationTimer = new Timer(3.0f);
+            enemyCreationTimer.StartTimer();
 
             projectiles = new List<Projectile>();
         }
@@ -90,12 +96,46 @@ namespace ArcadeFlyer2D
 
             // Update the components
             player.Update(gameTime);
-            enemy.Update(gameTime);
 
-            foreach(Projectile p in projectiles) 
+            foreach(Enemy enemy in enemies) 
             {
-                p.Update();
+                enemy.Update(gameTime);
             }
+
+            for(int i = projectiles.Count - 1; i >= 0 ; i--)
+            {
+                Projectile p = projectiles[i];
+                p.Update();
+
+                bool isPlayerProjectile = p.ProjectileType == ProjectileType.Player;
+                
+                if(!isPlayerProjectile && player.Overlaps(p))
+                {
+                    projectiles.Remove(p);
+                }
+                else if(isPlayerProjectile)
+                {
+                    for(int x = enemies.Count - 1; x >= 0; x--)
+                    {
+                        Enemy e = enemies[x];
+
+                        if(e.Overlaps(p))
+                        {
+                            projectiles.Remove(p);
+                            enemies.Remove(e);
+                        }
+                    }
+                }
+            }
+
+            if(!enemyCreationTimer.Active)
+            {
+                 enemies.Add(new Enemy(this, new Vector2(screenWidth, 0)));
+                 enemyCreationTimer.StartTimer();
+            }
+
+            enemyCreationTimer.Update(gameTime);
+
         }
 
         // Draw everything in the game
@@ -109,7 +149,12 @@ namespace ArcadeFlyer2D
 
             // Draw the components
             player.Draw(gameTime, spriteBatch);
-            enemy.Draw(gameTime, spriteBatch);
+
+            foreach(Enemy enemy in enemies) 
+            {
+                enemy.Draw(gameTime, spriteBatch);
+            }
+            
             foreach(Projectile p in projectiles)
             {
                 p.Draw(gameTime, spriteBatch);
@@ -133,7 +178,7 @@ namespace ArcadeFlyer2D
                 projectileTexture = playerProjectileSprite;
             }
 
-            Projectile firedProjectile = new Projectile(position, velocity, projectileTexture);
+            Projectile firedProjectile = new Projectile(position, velocity, projectileTexture, projectileType);
             projectiles.Add(firedProjectile);
         }
     }
