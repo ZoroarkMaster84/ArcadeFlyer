@@ -16,6 +16,12 @@ namespace ArcadeFlyer2D
         // The player
         private Player player;
 
+        private int life = 3;
+
+        private int score = 0;
+
+        private bool gameOver = false;
+
         private List<Enemy> enemies;
 
         private Timer enemyCreationTimer;
@@ -25,6 +31,8 @@ namespace ArcadeFlyer2D
         private Texture2D playerProjectileSprite;
 
         private Texture2D enemyProjectileSprite;
+
+        private SpriteFont textFont;
 
         // Screen width
         private int screenWidth = 1600;
@@ -86,6 +94,8 @@ namespace ArcadeFlyer2D
             spriteBatch = new SpriteBatch(GraphicsDevice);
             playerProjectileSprite = Content.Load<Texture2D>("PlayerFire");
             enemyProjectileSprite = Content.Load<Texture2D>("EnemyFire");
+            
+            textFont = Content.Load<SpriteFont>("Text");
         }
 
         // Called every frame
@@ -93,6 +103,11 @@ namespace ArcadeFlyer2D
         {   
             // Update base game
             base.Update(gameTime);
+
+            if (gameOver)
+            {
+                return;
+            }
 
             // Update the components
             player.Update(gameTime);
@@ -112,6 +127,12 @@ namespace ArcadeFlyer2D
                 if(!isPlayerProjectile && player.Overlaps(p))
                 {
                     projectiles.Remove(p);
+                    life--;
+
+                    if (life == 0) 
+                    {
+                        gameOver = true;
+                    }
                 }
                 else if(isPlayerProjectile)
                 {
@@ -123,6 +144,7 @@ namespace ArcadeFlyer2D
                         {
                             projectiles.Remove(p);
                             enemies.Remove(e);
+                            score += 1000;
                         }
                     }
                 }
@@ -147,8 +169,10 @@ namespace ArcadeFlyer2D
             // Start batch draw
             spriteBatch.Begin();
 
-            // Draw the components
-            player.Draw(gameTime, spriteBatch);
+            if (!gameOver)
+            {
+                player.Draw(gameTime, spriteBatch);
+            }
 
             foreach(Enemy enemy in enemies) 
             {
@@ -158,6 +182,16 @@ namespace ArcadeFlyer2D
             foreach(Projectile p in projectiles)
             {
                 p.Draw(gameTime, spriteBatch);
+            }
+
+            string scoreString = "Score: " + score.ToString();
+            string livesString = "Lives: " + life.ToString();
+            spriteBatch.DrawString(textFont, scoreString, Vector2.Zero, Color.Black);
+            spriteBatch.DrawString(textFont, livesString, new Vector2(0f, 20f), Color.Black);
+
+            if (gameOver) 
+            {
+                spriteBatch.DrawString(textFont, "Game Over!", new Vector2(screenWidth/2, screenHeight/2), Color.Black);
             }
 
             // End batch draw
