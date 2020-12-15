@@ -3,40 +3,33 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace ArcadeFlyer2D
 {
-    // A little evil thing
-    class Enemy : Sprite
+    
+    class Boss : Sprite
     {
-        // A reference to the game that will contain this enemy
         private ArcadeFlyerGame root;
 
-        // The the velocity for this enemy
         private Vector2 velocity;
 
         private Timer projectileCooldown;
 
-        // Initialize an enemy
-        public Enemy(ArcadeFlyerGame root, Vector2 position) : base(position)
+        public Boss(ArcadeFlyerGame root, Vector2 position) : base(position)
         {
             // Initialize values
             this.root = root;
             this.position = position;
-            this.SpriteWidth = 64.0f;
-            this.velocity = new Vector2(-1.0f, 5.0f);
+            this.SpriteWidth = 450.0f;
+            this.velocity = new Vector2(-0.5f, 3.0f);
 
-            projectileCooldown = new Timer(2.0f);
+            projectileCooldown = new Timer(1.0f);
 
-            // Load the content for this enemy
             LoadContent();
         }
 
-        // Loads all the assets for this enemy
         public void LoadContent()
         {
-            // Get the Enemy image
-            this.SpriteImage = root.Content.Load<Texture2D>("Enemy");
+            this.SpriteImage = root.Content.Load<Texture2D>("Boss");
         }
 
-        // Called each frame
         public void Update(GameTime gameTime)
         {
             // Handle movement
@@ -54,13 +47,13 @@ namespace ArcadeFlyer2D
             {
                 projectileCooldown.StartTimer();
                 Vector2 projectilePosition = new Vector2();
-                projectilePosition.X = position.X + (SpriteHeight / 2);
-                projectilePosition.Y = position.Y + (SpriteWidth / 2);
+                projectilePosition.X = position.X;
+                projectilePosition.Y = position.Y + (SpriteHeight / 2);
                 Vector2 projectileVelocity = new Vector2();
-                projectileVelocity.X = -5.0f;
+                projectileVelocity.X = -6.0f;
                 projectileVelocity.Y = 0f;
 
-                root.FireProjectile(projectilePosition, projectileVelocity, ProjectileType.Enemy);
+                root.FireProjectile(projectilePosition, projectileVelocity, ProjectileType.Boss);
             }
         }
     }

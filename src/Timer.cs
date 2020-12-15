@@ -7,7 +7,7 @@ namespace ArcadeFlyer2D
     class Timer
     {
         private float endTime;
-        private float currentTime;
+        public float currentTime;
         public bool Active
         {
             get;

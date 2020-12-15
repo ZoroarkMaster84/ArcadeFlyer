@@ -5,9 +5,9 @@ namespace ArcadeFlyer2D
 {
     class Projectile : Sprite
     {
-        private Vector2 velocity;
+        public Vector2 velocity;
 
-        private ProjectileType projectileType;
+        public ProjectileType projectileType;
         public ProjectileType ProjectileType
         {
             get { return projectileType; }
